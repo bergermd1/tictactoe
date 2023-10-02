@@ -1,7 +1,13 @@
 // const player1 = new Player(prompt('Enter name for player 1'), `X`)
 // const player2 = new Player(prompt('Enter name for player 2'), `O`)
 const player1 = new Player('Player 1', `X`)
-const player2 = new Player('Player 2', `O`)
+// const player2 = new Player('Player 2', `O`)
+const player2 = new Player(`Computer`, `O`);
+player2.generateMove = () => {
+    const openSquares = Gameboard.getOpenSquaresRemaining();
+    console.log(openSquares);
+    return openSquares[Math.floor(Math.random()*openSquares.length)];
+}
 
 const DisplayController = (() => {
     window.onload = () => {
@@ -19,8 +25,16 @@ const DisplayController = (() => {
         })
     }
 
+    function updateDisplay() {
+        Gameboard.getMarks()[`player1`].forEach(square => {
+            document.querySelector(`.square${square}`).textContent = player1.marker;
+        })
+        Gameboard.getMarks()[`player2`].forEach(square => {
+            document.querySelector(`.square${square}`).textContent = player2.marker;
+        })
+    }
+
     function resetDisplay() {
-        // console.log('yugaefue');
         for (let i = 1; i <= 9; i++) {
             document.querySelector(`.square${i}`).textContent = ``;
         }
@@ -43,7 +57,7 @@ const DisplayController = (() => {
         document.querySelector(`.message>button`).style.display = `block`;
     }
 
-    return {declareOutcome};
+    return {declareOutcome, updateDisplay};
 
 })();
 
@@ -92,6 +106,10 @@ const Gameboard = (() => {
                 marks[`player${playerTurn}`].push(square);
                 if (!isOver()) {
                     switchPlayers();
+                    if (playerTurn === 2) {
+                        markBoard(player2.generateMove());
+                        DisplayController.updateDisplay();
+                    }
                 } 
             }
         }
@@ -108,7 +126,22 @@ const Gameboard = (() => {
         playerTurn = 1;
     }
 
-    return {getPlayerTurn, markBoard, isOver, isValid, resetBoard};
+    function getMarks() {
+        return marks;
+    }
+
+    function getOpenSquaresRemaining() {
+        const takenSquares = marks[`player1`].concat(marks[`player2`]);
+        const openSquares = [];
+        for (let i = 1; i <= 9; i++) {
+            if (!takenSquares.includes(i)) {
+                openSquares.push(i);
+            }
+        }
+        return openSquares;
+    }
+
+    return {getPlayerTurn, markBoard, isOver, isValid, resetBoard, getMarks, getOpenSquaresRemaining};
 })();
 
 function Player(name, marker) {
