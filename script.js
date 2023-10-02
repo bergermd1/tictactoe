@@ -1,3 +1,52 @@
+// const player1 = new Player(prompt('Enter name for player 1'), `X`)
+// const player2 = new Player(prompt('Enter name for player 2'), `O`)
+const player1 = new Player('Player 1', `X`)
+const player2 = new Player('Player 2', `O`)
+
+const DisplayController = (() => {
+    window.onload = () => {
+        for (let i = 1; i <= 9; i++) {
+            document.querySelector(`.square${i}`).addEventListener(`click`, () => {
+                let currentPlayer = Gameboard.getPlayerTurn() === 1 ? player1 : player2;
+                if (!Gameboard.isOver() && Gameboard.isValid(i)) {
+                    document.querySelector(`.square${i}`).textContent = currentPlayer.marker;
+                    currentPlayer.makeSelection(Gameboard, i);
+                }
+            })
+        }
+        document.querySelector(`.message>button`).addEventListener(`click`, () => {
+            resetDisplay();
+        })
+    }
+
+    function resetDisplay() {
+        // console.log('yugaefue');
+        for (let i = 1; i <= 9; i++) {
+            document.querySelector(`.square${i}`).textContent = ``;
+        }
+        document.querySelector(`.message>p`).textContent = ``;
+        Gameboard.resetBoard();
+    }
+    
+    function declareOutcome(outcome) {
+        switch (outcome) {
+            case 0:
+                document.querySelector(`.message>p`).textContent = `It was a tie!`
+            break;
+            case 1:
+                document.querySelector(`.message>p`).textContent = `${player1.name} wins!`
+                break;
+            case 2:
+                document.querySelector(`.message>p`).textContent = `${player2.name} wins!`
+                break;
+            }
+        document.querySelector(`.message>button`).style.display = `block`;
+    }
+
+    return {declareOutcome};
+
+})();
+
 const Gameboard = (() => {
     let playerTurn = 1;
     const marks = {
@@ -7,25 +56,28 @@ const Gameboard = (() => {
     const WINNINGTRIOS = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [7,5,3]]
 
     const isOver = () => {
-        // return marks.player1.length + marks.player2.length === 9;
-        // marks.player1
+        let over = false;
         WINNINGTRIOS.forEach(trio => {
             if (marks.player1.includes(trio[0]) &&
                 marks.player1.includes(trio[1]) &&
                 marks.player1.includes(trio[2])) {
-                    console.log(`Game over, Player1 wins!`);
-                    return true;
-            }
-        })
-        WINNINGTRIOS.forEach(trio => {
-            if (marks.player2.includes(trio[0]) &&
+                    DisplayController.declareOutcome(1);
+                    over = true;
+                }
+            })
+            WINNINGTRIOS.forEach(trio => {
+                if (marks.player2.includes(trio[0]) &&
                 marks.player2.includes(trio[1]) &&
                 marks.player2.includes(trio[2])) {
-                    console.log(`Game over, Player2 wins!`);
-                    return true;
-            }
-        })
-        return false;
+                    DisplayController.declareOutcome(2);
+                    over = true;
+                }
+            })
+            if (!over && (marks.player1.length + marks.player2.length === 9)) {
+                DisplayController.declareOutcome(0);
+                over = true;
+        }
+        return over;
     }
 
     const getPlayerTurn = () => playerTurn;
@@ -36,10 +88,12 @@ const Gameboard = (() => {
 
     const markBoard = square => {
         if (isValid(square)) {
-            marks[`player${playerTurn}`].push(square);
             if (!isOver()) {
-                switchPlayers();
-            } 
+                marks[`player${playerTurn}`].push(square);
+                if (!isOver()) {
+                    switchPlayers();
+                } 
+            }
         }
     }
 
@@ -48,7 +102,13 @@ const Gameboard = (() => {
         return !alreadyPlayed;
     }
 
-    return {getPlayerTurn, markBoard};
+    function resetBoard() {
+        marks.player1 = [];
+        marks.player2 = [];
+        playerTurn = 1;
+    }
+
+    return {getPlayerTurn, markBoard, isOver, isValid, resetBoard};
 })();
 
 function Player(name, marker) {
@@ -58,18 +118,3 @@ function Player(name, marker) {
 
     return {name, marker, makeSelection}
 }
-
-const player1 = new Player(`Player 1`, `X`)
-const player2 = new Player(`Player 2`, `O`)
-// console.log(player1);
-// player1.makeSelection();
-
-player1.makeSelection(Gameboard, 1);
-player2.makeSelection(Gameboard, 4);
-player1.makeSelection(Gameboard, 2);
-player2.makeSelection(Gameboard, 5);
-player1.makeSelection(Gameboard, 7);
-player2.makeSelection(Gameboard, 6);
-// player1.makeSelection(Gameboard, );
-// player2.makeSelection(Gameboard, );
-// player1.makeSelection(Gameboard, );

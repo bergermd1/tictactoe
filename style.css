@@ -1,12 +1,30 @@
-.container {
-    height: 100vh;
+:root {
+    padding: 0;
+    margin: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.message {
+    padding-top: 20px;
+    height: 150px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.message > button {
+    display: none;
+}
+
+.container {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
 }
 
 .gameboard {
-    border: solid;
     height: 600px;
     width: 600px;
     display: grid;
@@ -14,7 +32,49 @@
 }
 
 .gameboard > div {
-    border: thin;
-    height: 10px;
-    width: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10em;
+    cursor: pointer;
+}
+
+.square1 {
+    border-bottom: solid;
+    border-right: solid;
+}
+.square2 {
+    border-bottom: solid;
+    border-left: solid;
+    border-right: solid;
+}
+.square3 {
+    border-bottom: solid;
+    border-left: solid;
+}
+.square4 {
+    border-top: solid;
+    border-bottom: solid;
+    border-right: solid;
+}
+.square5 {
+    border: solid
+}
+.square6 {
+    border-bottom: solid;
+    border-left: solid;
+    border-top: solid;
+}
+.square7 {
+    border-top: solid;
+    border-right: solid;
+}
+.square8 {
+    border-top: solid;
+    border-right: solid;
+    border-left: solid;
+}
+.square9 {
+    border-top: solid;
+    border-left: solid;
 }
