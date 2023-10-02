@@ -1,0 +1,20 @@
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gameboard {
+    border: solid;
+    height: 600px;
+    width: 600px;
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+
+.gameboard > div {
+    border: thin;
+    height: 10px;
+    width: 10px;
+}
